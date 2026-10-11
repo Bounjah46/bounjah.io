@@ -1,1 +1,0 @@
-For a large archive, do not commit all image files to the website repository. Upload optimized thumbnails and originals to object storage. Use stable object keys such as `design/poster-0001-640.webp`. Keep alt text, credits, licence/consent records and tags in a content manifest. Keep secrets out of client-side code and keep an independent backup of originals.
