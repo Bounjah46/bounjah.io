@@ -10,6 +10,79 @@
   </style>
   <script src="assets/site.js" defer></script><script type="module" src="assets/gallery-supabase.js"></script>
 </head>
+  <style>
+  #grid .gallery-card img{cursor:zoom-in}
+  .lb{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;
+      background:rgba(0,0,0,.92);cursor:zoom-out;opacity:0;transition:opacity .2s}
+  .lb.open{display:flex}
+  .lb.show{opacity:1}
+  .lb img{max-width:96vw;max-height:94vh;object-fit:contain;box-shadow:0 10px 60px rgba(0,0,0,.6);
+          transform:scale(.97);transition:transform .2s}
+  .lb.show img{transform:scale(1)}
+  .lb button{position:absolute;background:none;border:0;color:#fff;font-size:2rem;line-height:1;
+             padding:1rem;cursor:pointer;opacity:.7}
+  .lb button:hover{opacity:1}
+  .lb .lb-close{top:0;right:0}
+  .lb .lb-prev{left:0;top:50%;transform:translateY(-50%)}
+  .lb .lb-next{right:0;top:50%;transform:translateY(-50%)}
+</style>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lb-close" aria-label="Close">&times;</button>
+  <button class="lb-prev" aria-label="Previous">&#8249;</button>
+  <img alt="">
+  <button class="lb-next" aria-label="Next">&#8250;</button>
+</div>
+
+<script>
+(function () {
+  var grid = document.getElementById('grid');
+  var lb = document.getElementById('lb');
+  var big = lb.querySelector('img');
+  var imgs = [], i = 0;
+
+  function show(n) {
+    i = (n + imgs.length) % imgs.length;
+    big.src = imgs[i].currentSrc || imgs[i].src;
+    big.alt = imgs[i].alt || '';
+  }
+  function open(n) {
+    imgs = Array.prototype.slice.call(grid.querySelectorAll('.gallery-card img'));
+    show(n);
+    lb.classList.add('open');
+    requestAnimationFrame(function () { lb.classList.add('show'); });
+    document.body.style.overflow = 'hidden';
+    var multi = imgs.length > 1 ? '' : 'none';
+    lb.querySelector('.lb-prev').style.display = multi;
+    lb.querySelector('.lb-next').style.display = multi;
+  }
+  function close() {
+    lb.classList.remove('show');
+    setTimeout(function () { lb.classList.remove('open'); big.src = ''; }, 200);
+    document.body.style.overflow = '';
+  }
+
+  grid.addEventListener('click', function (e) {
+    var img = e.target.closest('.gallery-card img');
+    if (!img) return;
+    var all = grid.querySelectorAll('.gallery-card img');
+    open(Array.prototype.indexOf.call(all, img));
+  });
+
+  lb.addEventListener('click', function (e) {
+    if (e.target.closest('.lb-prev')) { show(i - 1); return; }
+    if (e.target.closest('.lb-next')) { show(i + 1); return; }
+    close(); // click anywhere else (image, backdrop, X) closes, like Tumblr
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(i - 1);
+    if (e.key === 'ArrowRight') show(i + 1);
+  });
+})();
+</script>
 <body>
   <div class="topline"><div class="wrap"><span>BOUNJAH. / THE GALLERY</span><span>DESIGN · PRINT · BODY-POSITIVE ART</span></div></div>
   <header class="wrap header"><a class="wordmark" href="index.html">BOUNJAH<span class="pink">.</span><small>Visual culture archive</small></a><nav><a href="index.html#work">Explore</a><a href="index.html#about">About</a><a href="gallery.html">Gallery</a></nav></header>
