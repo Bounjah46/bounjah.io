@@ -1,10 +1,23 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#171717"><title>Gallery — BOUNJAH.</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#171717">
+  <meta name="description" content="The BOUNJAH. visual culture archive."><title>Gallery — BOUNJAH.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
-  <script src="assets/site.js" defer>
-    
-  </script></head><body><div class="topline">
-    <div class="wrap"><span>BOUNJAH. / THE GALLERY</span><span>DESIGN · PRINT · BODY-POSITIVE ART</span></div></div><header class="wrap header">
-      <a class="wordmark" href="https://bounjah46.github.io/bounjah.io/">BOU<span>N</span>JAH<span class="pink">.</span><small>Visual culture archive</small></a><nav><a href="/#work">Explore</a><a href="/#about">About</a><a href="/gallery.html">Gallery</a></nav></header><main class="wrap section"><p class="eyebrow">Archive / All categories</p><h1 class="page-title">THE<br>COLLECTION<span class="lime">.</span></h1><p class="lead">This starter gallery is ready for your own work. Replace sample cards with images hosted in object storage or an image CDN.</p><div class="filters"><button class="filter active" data-filter="all" aria-pressed="true">All</button><button class="filter" data-filter="design" aria-pressed="false">Graphic design</button><button class="filter" data-filter="editorial" aria-pressed="false">Editorial</button><button class="filter" data-filter="body-positive" aria-pressed="false">Body-positive art</button><button class="filter" data-filter="inspiration" aria-pressed="false">Inspiration</button></div><div class="grid full-grid" id="grid"><article id="design" class="art lime-bg" data-category="design"><small>01 / DESIGN</small><strong>TYPE<br>STUDY.</strong><small>Replace with poster image</small></article><article id="editorial" class="art pink-bg" data-category="editorial"><small>02 / EDITORIAL</small><strong>PRINT<br>ISN'T<br>DEAD.</strong><small>Replace with editorial spread</small></article><article id="body-positive" class="art paper-bg" data-category="body-positive"><small>03 / BODY-POSITIVE ART</small><strong>NATURAL<br>BY DESIGN.</strong><small>Respectful, non-explicit art</small></article><article id="inspiration" class="art blue-bg" data-category="inspiration"><small>04 / INSPIRATION</small><strong>LOOK<br>CLOSER.</strong><small>Texture · Research</small></article><article class="art paper-bg" data-category="design"><small>05 / POSTER DESIGN</small><strong>LOUD<br>IDEAS.</strong><small>Add image URL to this card</small></article><article class="art blue-bg" data-category="editorial"><small>06 / VISUAL RESEARCH</small><strong>FORM<br>FOLLOWS<br>FEELING.</strong><small>Add image URL to this card</small></article></div><p id="empty" class="empty" hidden>No categories match that filter.</p><div class="note"><strong>Image storage:</strong> For thousands of images, keep originals in object storage and serve compressed thumbnails through a CDN. Never put secret API keys in browser code.</div></main><footer class="wrap footer"><a href="/" class="footer-brand">BOUNJAH.</a><span>Independent visual culture archive · 2026</span><a href="#main">Back to top ↑</a></footer></body></html>
+  <style>
+    .gallery-card{padding:0!important;overflow:hidden;display:flex;flex-direction:column;min-height:0}.gallery-card img{display:block;width:100%;height:auto;max-height:640px;object-fit:contain;background:#111}.gallery-card-copy{padding:1rem}.gallery-card-copy h2{font-size:1.25rem;margin:0 0 .5rem}.gallery-card-copy p{margin:0;color:#bbb;white-space:pre-wrap;overflow-wrap:anywhere}.gallery-status{color:#bbb;margin:1rem 0;font-family:'DM Mono',monospace;font-size:.8rem}
+  </style>
+  <script src="assets/site.js" defer></script><script type="module" src="assets/gallery-supabase.js"></script>
+</head>
+<body>
+  <div class="topline"><div class="wrap"><span>BOUNJAH. / THE GALLERY</span><span>DESIGN · PRINT · BODY-POSITIVE ART</span></div></div>
+  <header class="wrap header"><a class="wordmark" href="index.html">BOUNJAH<span class="pink">.</span><small>Visual culture archive</small></a><nav><a href="index.html#work">Explore</a><a href="index.html#about">About</a><a href="gallery.html">Gallery</a></nav></header>
+  <main class="wrap section"><p class="eyebrow">Archive / Published work</p><h1 class="page-title">THE<br>COLLECTION<span class="lime">.</span></h1><p class="lead">A curated collection of graphic design, editorial experiments, and body-positive visual culture.</p>
+    <p id="gallery-status" class="gallery-status" role="status" aria-live="polite">Loading published images…</p>
+    <div class="grid full-grid" id="grid"></div><p id="empty" class="empty" hidden>No images are currently published.</p>
+    <div class="note"><strong>Community standards:</strong> Publish only images you have the rights and permission to share. Respect privacy, consent, and applicable hosting rules.</div>
+  </main>
+  <footer class="wrap footer"><a href="index.html" class="footer-brand">BOUNJAH.</a><span>Independent visual culture archive · 2026</span><a href="#top">Back to top ↑</a></footer>
+</body>
+</html>

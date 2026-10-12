@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#171717"><meta name="robots" content="noindex,nofollow">
+  <title>Private Admin — BOUNJAH.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <style>
+    .admin-wrap{max-width:900px;margin:0 auto;padding:3rem 1.2rem 5rem}.admin-panel{background:#202020;border:1px solid #414141;padding:clamp(1.1rem,3vw,2rem);margin:1.5rem 0}.admin-form{display:grid;gap:1rem}.admin-form label{display:grid;gap:.45rem;font-family:'DM Mono',monospace;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}.admin-form input,.admin-form textarea{width:100%;background:#111;color:#f5f2e9;border:1px solid #555;padding:.9rem;font:inherit}.admin-form textarea{min-height:110px;resize:vertical}.admin-form input[type=file]{padding:.65rem}.admin-actions{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.7rem}.admin-btn{border:1px solid #a9f35a;background:#a9f35a;color:#171717;padding:.8rem 1rem;font-weight:700;cursor:pointer}.admin-btn.secondary{background:transparent;color:#f5f2e9;border-color:#555}.admin-btn.danger{background:#e96f91;border-color:#e96f91}.status{padding:.8rem 1rem;background:#292929;border-left:3px solid #a9f35a;margin:1rem 0;overflow-wrap:anywhere}.status.error{border-color:#e96f91}.hidden{display:none!important}.admin-item{display:grid;grid-template-columns:100px 1fr;gap:1rem;padding:1rem 0;border-bottom:1px solid #414141}.admin-item img{width:100px;height:100px;object-fit:cover;background:#111}.admin-item h3{margin:0 0 .35rem}.admin-item p{margin:.3rem 0;overflow-wrap:anywhere}.admin-small{color:#bbb;font-size:.8rem}.admin-top{display:flex;justify-content:space-between;gap:1rem;align-items:center;flex-wrap:wrap}.admin-top a{color:#a9f35a}@media(max-width:520px){.admin-item{grid-template-columns:76px 1fr}.admin-item img{width:76px;height:76px}}
+  </style>
+  <script type="module" src="assets/admin.js"></script>
+</head>
+<body>
+  <div class="topline"><div class="wrap"><span>BOUNJAH. / PRIVATE ADMIN</span><span>OWNER ACCESS ONLY</span></div></div>
+  <header class="wrap header"><a class="wordmark" href="index.html">BOUNJAH<span class="pink">.</span><small>Visual culture archive</small></a><nav><a href="index.html">View site</a><a href="gallery.html">Gallery</a></nav></header>
+  <main class="admin-wrap">
+    <p class="eyebrow">Content management / private</p><h1 class="page-title">PUBLISH<br>NEW WORK<span class="lime">.</span></h1>
+    <p class="lead">Sign in with your pre-created owner account to upload, publish, unpublish, or remove gallery images.</p>
+    <div id="status" class="status" role="status" aria-live="polite">Before using this page, configure Supabase and apply the SQL setup instructions in the included README.</div>
+    <section id="login-panel" class="admin-panel">
+      <h2>Owner sign in</h2>
+      <form id="login-form" class="admin-form">
+        <label>Email<input id="email" type="email" autocomplete="username" required></label>
+        <label>Password<input id="password" type="password" autocomplete="current-password" required></label>
+        <div class="admin-actions"><button class="admin-btn" type="submit">Sign in</button></div>
+      </form>
+    </section>
+    <section id="manager" class="hidden">
+      <div class="admin-top"><h2>Upload an image</h2><button id="signout" class="admin-btn secondary" type="button">Sign out</button></div>
+      <section class="admin-panel">
+        <form id="upload-form" class="admin-form">
+          <label>Image file (JPG, PNG, WebP or GIF; max 5 MB)<input id="image-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required></label>
+          <label>Title<input id="image-title" maxlength="160" required placeholder="A short, descriptive title"></label>
+          <label>Description<textarea id="image-description" maxlength="2000" placeholder="Context or notes about this image"></textarea></label>
+          <label><span><input id="publish-now" type="checkbox" checked> Publish immediately</span></label>
+          <div class="admin-actions"><button class="admin-btn" type="submit">Upload &amp; save</button></div>
+        </form>
+      </section>
+      <section class="admin-panel"><div class="admin-top"><h2>Your images</h2><button id="refresh" class="admin-btn secondary" type="button">Refresh</button></div><div id="admin-list"></div></section>
+    </section>
+  </main>
+  <footer class="wrap footer"><a href="index.html" class="footer-brand">BOUNJAH.</a><span>Private publishing area</span><a href="gallery.html">View gallery ↗</a></footer>
+</body>
+</html>
