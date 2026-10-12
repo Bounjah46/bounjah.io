@@ -1,6 +1,6 @@
 // These are public frontend settings, not secret credentials.
 // Replace both values with the Project URL and publishable/anon key from Supabase.
-export const SUPABASE_URL = 'https://supabase.com/dashboard/project/zhojylebscjdowtsqhokE';
+export const SUPABASE_URL = 'https://zhojylebscjdowtsqhok.supabase.co';
 export const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_-cuBdzYihBWVYhXZ_xl6CA_jOBISRMY';
 // Replace with the UUID of your own user from Supabase > Authentication > Users.
 // The database and storage policies must use the same UUID.
