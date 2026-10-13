@@ -24,7 +24,7 @@
     #image-lightbox .lightbox-meta{position:absolute;left:60px;right:60px;bottom:0;text-align:center;padding:12px 10px 0;color:#ddd;font-family:'DM Mono',monospace;font-size:.78rem;line-height:1.5;text-shadow:0 1px 4px #000;pointer-events:none}
     #image-lightbox .lightbox-title{display:block;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;margin-bottom:2px}
     #image-lightbox .lightbox-description{display:block;max-width:760px;margin:0 auto;white-space:pre-wrap;overflow-wrap:anywhere}
-    .gallery-card img{cursor:zoom-in}
+    .gallery-card img{cursor:zoom-in;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
     body.lightbox-open{overflow:hidden}
     @media(max-width:600px){
       #image-lightbox{padding:12px}
@@ -230,12 +230,57 @@
         if (returnFocus?.isConnected) returnFocus.focus?.({ preventScroll: true });
       }
 
+      // Desktop uses click; mobile also opens explicitly on a tap because some
+      // mobile browsers / embedded browsers fail to synthesize a reliable click.
+      const findGalleryImage = (target) => {
+        if (!(target instanceof Element)) return null;
+        const img = target.closest('img');
+        return img && grid.contains(img) && !img.closest('[hidden]') ? img : null;
+      };
+
+      let touchStart = null;
+      let lastTouchImage = null;
+      let lastTouchOpenAt = 0;
+
+      grid.addEventListener('touchstart', (event) => {
+        if (!event.changedTouches.length) return;
+        const touch = event.changedTouches[0];
+        touchStart = {
+          x: touch.clientX,
+          y: touch.clientY,
+          image: findGalleryImage(event.target)
+        };
+      }, { passive: true, capture: true });
+
+      grid.addEventListener('touchend', (event) => {
+        if (!touchStart || !event.changedTouches.length) return;
+        const touch = event.changedTouches[0];
+        const dx = touch.clientX - touchStart.x;
+        const dy = touch.clientY - touchStart.y;
+        const image = touchStart.image;
+        touchStart = null;
+
+        // Only treat a short, stationary touch as a tap; don't interrupt scrolling.
+        if (!image || Math.abs(dx) > 12 || Math.abs(dy) > 12) return;
+        event.preventDefault();
+        lastTouchImage = image;
+        lastTouchOpenAt = Date.now();
+        openViewer(image);
+      }, { passive: false, capture: true });
+
       grid.addEventListener('click', (event) => {
-        const img = event.target.closest('img');
-        if (!img || !grid.contains(img)) return;
+        const img = findGalleryImage(event.target);
+        if (!img) return;
+        // Suppress the synthetic click some browsers dispatch after touchend.
+        if (img === lastTouchImage && Date.now() - lastTouchOpenAt < 900) {
+          event.preventDefault();
+          event.stopPropagation();
+          lastTouchImage = null;
+          return;
+        }
         event.preventDefault();
         openViewer(img);
-      });
+      }, true);
 
       grid.addEventListener('keydown', (event) => {
         if ((event.key === 'Enter' || event.key === ' ') && event.target.matches('img')) {
