@@ -24,7 +24,7 @@
     #image-lightbox .lightbox-meta{position:absolute;left:60px;right:60px;bottom:0;text-align:center;padding:12px 10px 0;color:#ddd;font-family:'DM Mono',monospace;font-size:.78rem;line-height:1.5;text-shadow:0 1px 4px #000;pointer-events:none}
     #image-lightbox .lightbox-title{display:block;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;margin-bottom:2px}
     #image-lightbox .lightbox-description{display:block;max-width:760px;margin:0 auto;white-space:pre-wrap;overflow-wrap:anywhere}
-    .gallery-card img{cursor:zoom-in;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    .gallery-card img{position:relative;z-index:1;display:block;cursor:zoom-in;touch-action:manipulation;-webkit-tap-highlight-color:transparent;pointer-events:auto}
     body.lightbox-open{overflow:hidden}
     @media(max-width:600px){
       #image-lightbox{padding:12px}
@@ -230,55 +230,79 @@
         if (returnFocus?.isConnected) returnFocus.focus?.({ preventScroll: true });
       }
 
-      // Desktop uses click; mobile also opens explicitly on a tap because some
-      // mobile browsers / embedded browsers fail to synthesize a reliable click.
+      // Resolve the image by both event target and touch coordinates. On some mobile
+      // browsers, an overlapping element can become the event target over part of an image.
       const findGalleryImage = (target) => {
         if (!(target instanceof Element)) return null;
         const img = target.closest('img');
         return img && grid.contains(img) && !img.closest('[hidden]') ? img : null;
       };
 
-      let touchStart = null;
+      function findGalleryImageAtPoint(x, y) {
+        const images = Array.from(grid.querySelectorAll('img')).filter((img) => {
+          return !img.closest('[hidden]') && (img.currentSrc || img.src || img.dataset.src);
+        });
+        // Search last-to-first to favor the visually topmost image in unusual overlaps.
+        for (let i = images.length - 1; i >= 0; i--) {
+          const img = images[i];
+          const rect = img.getBoundingClientRect();
+          if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) return img;
+        }
+        return null;
+      }
+
+      let pointerStart = null;
       let lastTouchImage = null;
       let lastTouchOpenAt = 0;
 
-      grid.addEventListener('touchstart', (event) => {
-        if (!event.changedTouches.length) return;
-        const touch = event.changedTouches[0];
-        touchStart = {
-          x: touch.clientX,
-          y: touch.clientY,
-          image: findGalleryImage(event.target)
+      // Use document capture so a transparent/overlaid element cannot steal taps on an image.
+      document.addEventListener('pointerdown', (event) => {
+        if (viewer.classList.contains('is-open')) return;
+        if (event.pointerType !== 'touch' && event.pointerType !== 'pen') return;
+        const image = findGalleryImage(event.target) || findGalleryImageAtPoint(event.clientX, event.clientY);
+        pointerStart = {
+          x: event.clientX,
+          y: event.clientY,
+          image,
+          pointerId: event.pointerId
         };
-      }, { passive: true, capture: true });
+      }, { capture: true, passive: true });
 
-      grid.addEventListener('touchend', (event) => {
-        if (!touchStart || !event.changedTouches.length) return;
-        const touch = event.changedTouches[0];
-        const dx = touch.clientX - touchStart.x;
-        const dy = touch.clientY - touchStart.y;
-        const image = touchStart.image;
-        touchStart = null;
-
-        // Only treat a short, stationary touch as a tap; don't interrupt scrolling.
-        if (!image || Math.abs(dx) > 12 || Math.abs(dy) > 12) return;
+      document.addEventListener('pointerup', (event) => {
+        if (viewer.classList.contains('is-open')) { pointerStart = null; return; }
+        if (!pointerStart || pointerStart.pointerId !== event.pointerId) return;
+        const start = pointerStart;
+        pointerStart = null;
+        if (!start.image) return;
+        const dx = event.clientX - start.x;
+        const dy = event.clientY - start.y;
+        // Ignore drags and normal page scrolling.
+        if (Math.abs(dx) > 12 || Math.abs(dy) > 12) return;
+        const imageAtEnd = findGalleryImage(event.target) || findGalleryImageAtPoint(event.clientX, event.clientY);
+        if (imageAtEnd !== start.image) return;
         event.preventDefault();
-        lastTouchImage = image;
+        lastTouchImage = start.image;
         lastTouchOpenAt = Date.now();
-        openViewer(image);
-      }, { passive: false, capture: true });
+        openViewer(start.image);
+      }, { capture: true, passive: false });
 
-      grid.addEventListener('click', (event) => {
-        const img = findGalleryImage(event.target);
+      // Keep desktop mouse clicks, with coordinate fallback for browsers where an overlay
+      // becomes the event target over part of the image.
+      document.addEventListener('click', (event) => {
+        if (viewer.classList.contains('is-open')) return;
+        const directImage = findGalleryImage(event.target);
+        const targetIsInteractive = event.target instanceof Element && event.target.closest('a, button, input, textarea, select, [role="button"]');
+        const img = directImage || (!targetIsInteractive ? findGalleryImageAtPoint(event.clientX, event.clientY) : null);
         if (!img) return;
-        // Suppress the synthetic click some browsers dispatch after touchend.
-        if (img === lastTouchImage && Date.now() - lastTouchOpenAt < 900) {
+        if (event.detail !== 0 && img === lastTouchImage && Date.now() - lastTouchOpenAt < 1000) {
           event.preventDefault();
           event.stopPropagation();
           lastTouchImage = null;
           return;
         }
+        // Only handle clicks that are on an image (or coordinates within one).
         event.preventDefault();
+        event.stopPropagation();
         openViewer(img);
       }, true);
 
