@@ -77,7 +77,94 @@
       #image-lightbox .lightbox-meta{left:54px;right:54px;bottom:0;max-height:20svh;padding-top:4px}
       #image-lightbox .lightbox-description{display:none}
     }
+/* BOUNJAH — Gallery pagination */
+.pager {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 38px auto 20px;
+  padding: 12px 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  text-transform: none;
+}
 
+.pager button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 15px;
+
+  background: #202020;
+  color: #f0eee7;
+  border: 1px solid #ffffff35;
+  border-radius: 6px;
+
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.pager button[aria-current="page"] {
+  background: #d7ff3f;
+  color: #191919;
+  border-color: #d7ff3f;
+  font-weight: 700;
+  box-shadow: 0 0 18px #d7ff3f18;
+}
+
+.pager button:not(:disabled):not([aria-current="page"]):hover {
+  background: #ff6caa;
+  color: #191919;
+  border-color: #ff6caa;
+  transform: translateY(-2px);
+}
+
+.pager button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pager button:focus-visible {
+  outline: 2px solid #d7ff3f;
+  outline-offset: 4px;
+}
+
+.pager .dots {
+  color: #aaa79e;
+  padding: 0 3px;
+}
+
+@media (max-width: 520px) {
+  .pager {
+    gap: 7px;
+    margin-top: 28px;
+  }
+
+  .pager button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 11px;
+    border-radius: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pager button {
+    transition: none;
+  }
+}
   </style>
   <script src="assets/site.js" defer></script><script type="module" src="assets/gallery-supabase.js"></script>
 </head>
